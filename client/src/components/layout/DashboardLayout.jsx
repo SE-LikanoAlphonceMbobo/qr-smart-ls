@@ -14,7 +14,7 @@ const DRAWER_WIDTH = 240;
 const DashboardLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth(); 
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -91,8 +91,13 @@ const DashboardLayout = ({ children }) => {
             Admin Panel
           </Typography>
           <Box display="flex" alignItems="center" gap={2}>
-            <Typography variant="body2" color="textSecondary">Admin User</Typography>
-            <Avatar sx={{ bgcolor: 'primary.main' }}>A</Avatar>
+           <Typography variant="body2">
+              {user?.name || 'Admin'}
+          </Typography>
+          <Avatar>
+            {user?.name?.charAt(0).toUpperCase() || 'A'}
+          </Avatar>
+
           </Box>
         </Toolbar>
       </AppBar>

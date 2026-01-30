@@ -5,14 +5,21 @@ import { useAuth } from '../../context/AuthContext';
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
           QR Platform
         </Typography>
+
+        {user && (
+          <Typography sx={{ mr: 3 }}>
+            Welcome, <strong>{user.name}</strong>
+          </Typography>
+        )}
+
         <Box display="flex" gap={2}>
           <Button color="inherit" onClick={() => navigate('/dashboard')}>
             Dashboard

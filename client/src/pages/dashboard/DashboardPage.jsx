@@ -8,6 +8,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext'; // ✅ import AuthContext
 
 const StatCard = ({ title, value, color, icon }) => (
   <Paper
@@ -39,9 +40,10 @@ const StatCard = ({ title, value, color, icon }) => (
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // ✅ dynamic user
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [stats, setStats] = useState({ totalRestaurants: 0, totalLinks: 0, totalActiveLinks: 0, totalScans: 0 });
   const [recentLinks, setRecentLinks] = useState([]);
 
@@ -70,7 +72,7 @@ const DashboardPage = () => {
     );
   }
 
-  // NEW: Smart Logic to determine the best "Next Step"
+  // Determine next action
   const getNextAction = () => {
     if (stats.totalRestaurants === 0) {
       return {
@@ -108,16 +110,24 @@ const DashboardPage = () => {
 
   return (
     <Box>
-      {/* Smart Header Button */}
+      {/* Smart Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Box>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            Welcome back, Admin
-          </Typography>
-          <Typography variant="body1" color="textSecondary">
-            {action.desc}
-          </Typography>
+        <Box display="flex" alignItems="center" gap={2}>
+          {/* Avatar with first letter */}
+          <Avatar sx={{ bgcolor: '#1976d2', width: 56, height: 56, fontSize: 24 }}>
+            {user?.name?.charAt(0).toUpperCase() || 'A'}
+          </Avatar>
+
+          <Box>
+            <Typography variant="h4" fontWeight="bold" gutterBottom>
+              Welcome back, {user?.name || 'Admin'}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              {action.desc}
+            </Typography>
+          </Box>
         </Box>
+
         <Button
           variant="contained"
           startIcon={action.icon}
@@ -138,16 +148,10 @@ const DashboardPage = () => {
         <StatCard title="Total Scans" value={stats.totalScans} color="#ed6c02" icon={<QrCodeIcon />} />
       </Box>
 
-      {/* Recent Links Section */}
+      {/* Recent Links */}
       <Paper 
         elevation={0} 
-        sx={{ 
-          p: 4, 
-          borderRadius: 3, 
-          border: '1px solid #e0e0e0',
-          minHeight: 300,
-          bgcolor: 'white'
-        }}
+        sx={{ p: 4, borderRadius: 3, border: '1px solid #e0e0e0', minHeight: 300, bgcolor: 'white' }}
       >
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
           <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1.25rem' }}>
@@ -156,17 +160,8 @@ const DashboardPage = () => {
           <Button color="primary" onClick={() => navigate('/dashboard')}>View All</Button>
         </Box>
 
-        {/* Empty State Logic */}
         {recentLinks.length === 0 ? (
-          <Box 
-            display="flex" 
-            flexDirection="column" 
-            alignItems="center" 
-            justifyContent="center" 
-            minHeight={300} 
-            textAlign="center"
-            color="textSecondary"
-          >
+          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight={300} textAlign="center" color="textSecondary">
             <QrCodeIcon sx={{ fontSize: 64, mb: 2, opacity: 0.4 }} />
             <Typography variant="h5" fontWeight="bold" mb={1}>No links yet</Typography>
             <Typography variant="body1" mb={3} sx={{ maxWidth: 400 }}>
