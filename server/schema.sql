@@ -38,3 +38,13 @@ CREATE TABLE IF NOT EXISTS links (
 
 -- Index for fetching ordered links
 CREATE INDEX IF NOT EXISTS idx_links_rest_order ON links(restaurant_id, display_order);
+
+
+-- Run this in your 'qr_system_db'
+
+-- Add new columns to Users table
+ALTER TABLE users 
+ADD COLUMN name VARCHAR(255),
+ADD COLUMN phone VARCHAR(20),
+ADD COLUMN security_question VARCHAR(255),
+ADD COLUMN security_answer_hash VARCHAR(255);

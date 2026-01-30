@@ -1,19 +1,22 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-// Connection pool configuration
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-  connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection could not be established
+  max: 20, 
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000, // Increased from 2000 to 10000 to avoid premature timeout
+  
+  // CRITICAL FIXES FOR WINDOWS/LOCAL DEV:
+  keepAlive: true,                 // Keep TCP connection alive
+  statement_timeout: 10000,          // Timeout individual queries after 10s
+  query_timeout: 10000,
 });
 
-// Test the connection on startup
 pool.on('connect', () => {
   console.log('Connected to PostgreSQL Database');
 });

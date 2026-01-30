@@ -21,6 +21,13 @@ app.use(limiter);
 
 // 3. Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/restaurant', require('./routes/restaurant'));
+app.use('/api/links', require('./routes/links'));
+app.use('/api/upload', require('./routes/upload'));
+ 
+
+app.use('/r', require('./routes/public'));
 
 // 4. Base Test Route
 app.get('/', (req, res) => {
